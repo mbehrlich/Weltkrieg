@@ -1,0 +1,62 @@
+html, body, div {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  background-color: #bbb;
+  color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 24px;
+  text-align: center;
+  margin: 24px 0;
+}
+
+.main-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.side-panel {
+  background-color: white;
+  border: 1px solid #777;
+  border-radius: 8px;
+  width: 200px;
+  height: 500px;
+}
+
+.map {
+  border: 1px solid #777;
+  width: 600px;
+  height: 600px;
+}
+
+.map canvas {
+  height: 100%;
+  width: 100%;
+}
+
+.research {
+  margin-right: 100px;
+}
+
+.production {
+  margin-left: 100px;
+}
+
+.secondary-content {
+  background-color: white;
+  border: 1px solid #777;
+  border-radius: 8px;
+  width: 1000px;
+  height: 250px;
+  margin: 24px auto;
+}
