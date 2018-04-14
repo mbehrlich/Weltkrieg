@@ -211,20 +211,76 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Map = function (_React$Component) {
   _inherits(Map, _React$Component);
 
-  function Map() {
+  function Map(props) {
     _classCallCheck(this, Map);
 
-    return _possibleConstructorReturn(this, (Map.__proto__ || Object.getPrototypeOf(Map)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Map.__proto__ || Object.getPrototypeOf(Map)).call(this, props));
+
+    _this.zoom = 1;
+    _this.factor = 0.5;
+    _this.screenX = 0;
+    _this.screenY = 0;
+    _this.worldMap = undefined;
+    _this.canvas = undefined;
+    _this.ctx = undefined;
+    return _this;
   }
 
   _createClass(Map, [{
-    key: 'render',
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      this.worldMap = new Image();
+      this.canvas = document.getElementById("world-map");
+      this.ctx = this.canvas.getContext("2d");
+      this.worldMap.addEventListener('load', function () {
+        _this2.ctx.scale(0.5, 0.5);
+        _this2.ctx.drawImage(_this2.worldMap, _this2.screenX, _this2.screenY);
+        _this2.canvas.addEventListener('wheel', function (event) {
+          if (event.wheelDelta > 0 && _this2.zoom < 5) {
+            _this2.zoom++;
+            _this2.ctx.clearRect(0, 0, _this2.canvas.width, _this2.canvas.height);
+            _this2.ctx.scale(1.25, 1.25);
+            _this2.factor *= 1.25;
+            _this2.ctx.drawImage(_this2.worldMap, _this2.screenX, _this2.screenY);
+          } else if (event.wheelDelta < 0 && _this2.zoom > 1) {
+            _this2.zoom--;
+            _this2.ctx.clearRect(0, 0, _this2.canvas.width, _this2.canvas.height);
+            _this2.ctx.scale(0.8, 0.8);
+            _this2.factor *= 0.8;
+            _this2.ctx.drawImage(_this2.worldMap, _this2.screenX, _this2.screenY);
+          }
+        });
+
+        _this2.canvas.addEventListener('mousedown', function (event) {
+          var movingMap = _this2.mapMover(event);
+          _this2.canvas.addEventListener('mousemove', movingMap);
+          window.addEventListener('mouseup', function () {
+            _this2.canvas.removeEventListener('mousemove', movingMap);
+          }, { once: true });
+        });
+      });
+      this.worldMap.src = '../static/world_map.png';
+    }
+  }, {
+    key: "mapMover",
+    value: function mapMover(initialEvent) {
+      var _this3 = this;
+
+      var screenX = this.screenX;
+      var screenY = this.screenY;
+      return function (event) {
+        _this3.screenX = Math.max(Math.min(0, (event.offsetX - initialEvent.offsetX) / _this3.factor + screenX), _this3.canvas.width / _this3.factor - _this3.worldMap.width);
+        _this3.screenY = Math.max(Math.min(0, (event.offsetY - initialEvent.offsetY) / _this3.factor + screenY), _this3.canvas.height / _this3.factor - _this3.worldMap.height);
+        console.log(_this3.screenX, _this3.screenY, _this3.factor);
+        _this3.ctx.drawImage(_this3.worldMap, _this3.screenX, _this3.screenY);
+      };
+    }
+  }, {
+    key: "render",
     value: function render() {
-      return _react2.default.createElement(
-        'div',
-        null,
-        'Map'
-      );
+      return _react2.default.createElement("canvas", { id: "world-map", height: "600", width: "600" });
     }
   }]);
 
