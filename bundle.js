@@ -237,20 +237,21 @@ var Map = function (_React$Component) {
       this.worldMap.addEventListener('load', function () {
         _this2.ctx.scale(0.5, 0.5);
         _this2.ctx.drawImage(_this2.worldMap, _this2.screenX, _this2.screenY);
+        _this2.drawSectors();
         _this2.canvas.addEventListener('wheel', function (event) {
           if (event.wheelDelta > 0 && _this2.zoom < 5) {
             _this2.zoom++;
             _this2.ctx.clearRect(0, 0, _this2.canvas.width, _this2.canvas.height);
             _this2.ctx.scale(1.25, 1.25);
             _this2.factor *= 1.25;
-            _this2.ctx.drawImage(_this2.worldMap, _this2.screenX, _this2.screenY);
           } else if (event.wheelDelta < 0 && _this2.zoom > 1) {
             _this2.zoom--;
             _this2.ctx.clearRect(0, 0, _this2.canvas.width, _this2.canvas.height);
             _this2.ctx.scale(0.8, 0.8);
             _this2.factor *= 0.8;
-            _this2.ctx.drawImage(_this2.worldMap, _this2.screenX, _this2.screenY);
           }
+          _this2.ctx.drawImage(_this2.worldMap, _this2.screenX, _this2.screenY);
+          _this2.drawSectors();
         });
 
         _this2.canvas.addEventListener('mousedown', function (event) {
@@ -264,17 +265,34 @@ var Map = function (_React$Component) {
       this.worldMap.src = '../static/world_map.png';
     }
   }, {
+    key: "drawSectors",
+    value: function drawSectors() {
+      var _this3 = this;
+
+      this.ctx.beginPath();
+      this.props.landSectors.forEach(function (sector) {
+        var vertices = sector.vertices;
+        var lastVertex = vertices[vertices.length - 1];
+        _this3.ctx.moveTo(lastVertex.x + _this3.screenX, lastVertex.y + _this3.screenY);
+        sector.vertices.forEach(function (vertex, index) {
+          _this3.ctx.lineTo(vertex.x + _this3.screenX, vertex.y + _this3.screenY);
+        });
+      });
+
+      this.ctx.stroke();
+    }
+  }, {
     key: "mapMover",
     value: function mapMover(initialEvent) {
-      var _this3 = this;
+      var _this4 = this;
 
       var screenX = this.screenX;
       var screenY = this.screenY;
       return function (event) {
-        _this3.screenX = Math.max(Math.min(0, (event.offsetX - initialEvent.offsetX) / _this3.factor + screenX), _this3.canvas.width / _this3.factor - _this3.worldMap.width);
-        _this3.screenY = Math.max(Math.min(0, (event.offsetY - initialEvent.offsetY) / _this3.factor + screenY), _this3.canvas.height / _this3.factor - _this3.worldMap.height);
-        console.log(_this3.screenX, _this3.screenY, _this3.factor);
-        _this3.ctx.drawImage(_this3.worldMap, _this3.screenX, _this3.screenY);
+        _this4.screenX = Math.max(Math.min(0, (event.offsetX - initialEvent.offsetX) / _this4.factor + screenX), _this4.canvas.width / _this4.factor - _this4.worldMap.width);
+        _this4.screenY = Math.max(Math.min(0, (event.offsetY - initialEvent.offsetY) / _this4.factor + screenY), _this4.canvas.height / _this4.factor - _this4.worldMap.height);
+        _this4.ctx.drawImage(_this4.worldMap, _this4.screenX, _this4.screenY);
+        _this4.drawSectors();
       };
     }
   }, {
@@ -318,7 +336,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var mapStateToProps = function mapStateToProps(state) {
   return {
     player: state.game.player,
-    selectedSector: state.game.selected
+    selectedSector: state.game.selected,
+    landSectors: state.sectors.landSectors,
+    seaSectors: state.sectors.seaSectors
   };
 };
 
@@ -39554,13 +39574,71 @@ var _game_reducer = __webpack_require__(/*! ./game_reducer */ "./reducers/game_r
 
 var _game_reducer2 = _interopRequireDefault(_game_reducer);
 
+var _sector_reducer = __webpack_require__(/*! ./sector_reducer */ "./reducers/sector_reducer.js");
+
+var _sector_reducer2 = _interopRequireDefault(_sector_reducer);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var RootReducer = (0, _redux.combineReducers)({
-  game: _game_reducer2.default
+  game: _game_reducer2.default,
+  sectors: _sector_reducer2.default
 });
 
 exports.default = RootReducer;
+
+/***/ }),
+
+/***/ "./reducers/sector_reducer.js":
+/*!************************************!*\
+  !*** ./reducers/sector_reducer.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _lodash = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+
+var _na_sectors = __webpack_require__(/*! ../sectors/na_sectors */ "./sectors/na_sectors");
+
+var _na_sectors2 = _interopRequireDefault(_na_sectors);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var defaultState = {
+  landSectors: _na_sectors2.default,
+  seaSectors: []
+};
+
+var SectorReducer = function SectorReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultState;
+  var action = arguments[1];
+
+  var newState = void 0;
+  switch (action.type) {
+    default:
+      return state;
+  }
+};
+
+exports.default = SectorReducer;
+
+/***/ }),
+
+/***/ "./sectors/na_sectors":
+/*!****************************!*\
+  !*** ./sectors/na_sectors ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/home/matthew/Weltkrieg/Weltkrieg/sectors/na_sectors'");
 
 /***/ }),
 

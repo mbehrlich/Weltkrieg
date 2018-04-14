@@ -5,6 +5,8 @@ import Map from './map';
 const mapStateToProps = state => ({
   player: state.game.player,
   selectedSector: state.game.selected,
+  landSectors: state.sectors.landSectors,
+  seaSectors: state.sectors.seaSectors,
 });
 
 const mapDispatchToProps = dispatch => ({
