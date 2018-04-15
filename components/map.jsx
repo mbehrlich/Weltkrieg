@@ -51,13 +51,15 @@ class Map extends React.Component {
 
   drawSectors() {
     this.ctx.beginPath();
-    this.props.landSectors.forEach(sector => {
+    Object.values(this.props.landSectors).forEach(sector => {
       const vertices = sector.vertices;
-      const lastVertex = vertices[vertices.length - 1];
-      this.ctx.moveTo(lastVertex.x + this.screenX, lastVertex.y + this.screenY);
-      sector.vertices.forEach((vertex, index) => {
-        this.ctx.lineTo(vertex.x + this.screenX, vertex.y + this.screenY);
-      });
+      if (vertices) {
+        const lastVertex = vertices[vertices.length - 1];
+        this.ctx.moveTo(lastVertex.x + this.screenX, lastVertex.y + this.screenY);
+        sector.vertices.forEach((vertex, index) => {
+          this.ctx.lineTo(vertex.x + this.screenX, vertex.y + this.screenY);
+        });
+      }
     });
 
     this.ctx.stroke();
